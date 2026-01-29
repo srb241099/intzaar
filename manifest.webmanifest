@@ -1,14 +1,14 @@
 {
-  "name": "Waiting Countdown",
-  "short_name": "Waiting",
-  "id": "/Waiting/",
-  "start_url": "/Waiting/",
-  "scope": "/Waiting/",
+  "name": "Intzaar Countdown",
+  "short_name": "Intzaar",
+  "id": "/intzaar/",
+  "start_url": "/intzaar/",
+  "scope": "/intzaar/",
   "display": "standalone",
   "background_color": "#0b1220",
   "theme_color": "#0b1220",
   "icons": [
-    { "src": "/Waiting/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "/Waiting/icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+    { "src": "/intzaar/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/intzaar/icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
   ]
 }
