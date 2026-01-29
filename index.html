@@ -1,15 +1,15 @@
 <!doctype html>
-<html lang="en">
+<html lang="hi">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
 
-  <!-- PWA -->
+  <!-- ✅ PWA -->
   <meta name="theme-color" content="#0b1220" />
-  <link rel="manifest" href="/Waiting/manifest.webmanifest" />
-  <link rel="apple-touch-icon" href="/Waiting/icons/icon-192.png" />
+  <link rel="manifest" href="/intzaar/manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="/intzaar/icons/icon-192.png" />
 
-  <title>Waiting Countdown</title>
+  <title>Intzaar Countdown</title>
 
   <style>
     :root{
@@ -53,7 +53,6 @@
       border:1px solid var(--border); padding:8px 10px; border-radius:999px; background: rgba(0,0,0,.18);
       white-space:nowrap;
     }
-
     .grid{ position:relative; z-index:1; display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; }
     .tile{
       border:1px solid var(--border); border-radius:18px; padding:12px 10px;
@@ -80,6 +79,12 @@
     .fill{ height:100%; width:0%; background: linear-gradient(90deg, #60a5fa, #a78bfa, #34d399); border-radius:999px; transition: width .18s linear; }
 
     .footer{ position:relative; z-index:1; margin-top:12px; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; color: var(--muted); font-size:12px; }
+    .btnRow{ position:relative; z-index:1; margin-top:12px; display:flex; gap:10px; flex-wrap:wrap; }
+    .btn{
+      border:1px solid var(--border); background: rgba(0,0,0,.18); color: rgba(255,255,255,.9);
+      padding:10px 12px; border-radius: 14px; font-weight: 700; font-size: 13px; cursor:pointer;
+    }
+    .btn:active{ transform: translateY(1px); }
 
     @media (max-width: 360px){
       .grid{ grid-template-columns: repeat(2, 1fr); }
@@ -120,6 +125,11 @@
         <div id="nowTxt">Now: --</div>
         <div id="leftTxt">Left: --</div>
       </div>
+
+      <div class="btnRow">
+        <button class="btn" id="copyLeft">Copy Left</button>
+        <button class="btn" id="installBtn" style="display:none;">Install App</button>
+      </div>
     </div>
   </div>
 
@@ -137,6 +147,7 @@
     function update(){
       const now = new Date();
       const diff = target - now;
+
       $("nowTxt").textContent = `Now: ${fmt(now)}`;
 
       if (diff <= 0){
@@ -174,10 +185,39 @@
     }
     update();
 
-    // ✅ Service Worker: MUST control /Waiting/ scope
+    // Copy Left
+    $("copyLeft").addEventListener("click", async () => {
+      try{
+        await navigator.clipboard.writeText($("leftTxt").textContent);
+        $("copyLeft").textContent = "Copied ✅";
+        setTimeout(()=> $("copyLeft").textContent = "Copy Left", 1000);
+      }catch(e){
+        alert("Copy nahi hua.");
+      }
+    });
+
+    // ✅ PWA install button
+    const installBtn = $("installBtn");
+    let deferredPrompt = null;
+
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = "inline-block";
+    });
+
+    installBtn.addEventListener("click", async () => {
+      if(!deferredPrompt) return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      installBtn.style.display = "none";
+    });
+
+    // ✅ Service Worker register for /intzaar/ scope
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("/Waiting/sw.js", { scope: "/Waiting/" });
+        navigator.serviceWorker.register("/intzaar/sw.js", { scope: "/intzaar/" });
       });
     }
   </script>
