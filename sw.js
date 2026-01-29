@@ -1,11 +1,11 @@
-const CACHE_NAME = "waiting-pwa-v5";
+const CACHE_NAME = "intzaar-pwa-v1";
 const ASSETS = [
-  "/Waiting/",
-  "/Waiting/index.html",
-  "/Waiting/manifest.webmanifest",
-  "/Waiting/sw.js",
-  "/Waiting/icons/icon-192.png",
-  "/Waiting/icons/icon-512.png"
+  "/intzaar/",
+  "/intzaar/index.html",
+  "/intzaar/manifest.webmanifest",
+  "/intzaar/sw.js",
+  "/intzaar/icons/icon-192.png",
+  "/intzaar/icons/icon-512.png"
 ];
 
 self.addEventListener("install", (event) => {
