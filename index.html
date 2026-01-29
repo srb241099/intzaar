@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+
+  <!-- PWA -->
+  <meta name="theme-color" content="#0b1220" />
+  <link rel="manifest" href="/Waiting/manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="/Waiting/icons/icon-192.png" />
+
+  <title>Waiting Countdown</title>
+
+  <style>
+    :root{
+      --bg1:#0b1220; --bg2:#121a2e;
+      --card: rgba(255,255,255,.08); --card2: rgba(255,255,255,.06);
+      --text: rgba(255,255,255,.92); --muted: rgba(255,255,255,.65);
+      --border: rgba(255,255,255,.14); --shadow: 0 18px 60px rgba(0,0,0,.45);
+      --radius: 22px;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0; min-height:100svh; display:grid; place-items:center; padding:18px;
+      color:var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans";
+      background:
+        radial-gradient(1200px 700px at 15% 10%, #2b7bff33 0%, transparent 60%),
+        radial-gradient(1000px 600px at 85% 20%, #a855f733 0%, transparent 55%),
+        radial-gradient(900px 700px at 40% 95%, #22c55e26 0%, transparent 55%),
+        linear-gradient(160deg, var(--bg1), var(--bg2));
+    }
+    .wrap{ width:min(560px, 100%); }
+    .card{
+      background: linear-gradient(180deg, var(--card), var(--card2));
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:18px;
+      backdrop-filter: blur(10px);
+      overflow:hidden; position:relative;
+    }
+    .card:before{
+      content:""; position:absolute; inset:-2px;
+      background: linear-gradient(90deg, #60a5fa55, #a78bfa55, #34d39955);
+      filter: blur(22px); opacity:.35; z-index:0;
+    }
+    .top{ position:relative; z-index:1; display:flex; justify-content:space-between; gap:12px; margin-bottom:14px; }
+    .title{ margin:0; font-size: clamp(18px, 4.5vw, 22px); line-height:1.25; }
+    .subtitle{ margin:6px 0 0; font-size: 13px; color: var(--muted); }
+    .badge{
+      position:relative; z-index:1; font-size:12px; color:rgba(255,255,255,.85);
+      border:1px solid var(--border); padding:8px 10px; border-radius:999px; background: rgba(0,0,0,.18);
+      white-space:nowrap;
+    }
+
+    .grid{ position:relative; z-index:1; display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; }
+    .tile{
+      border:1px solid var(--border); border-radius:18px; padding:12px 10px;
+      background: rgba(0,0,0,.18); text-align:center; min-height:82px; display:grid; place-items:center;
+    }
+    .num{ font-variant-numeric: tabular-nums; font-size: clamp(22px, 6vw, 32px); font-weight: 800; margin:0; }
+    .lbl{ margin-top:6px; font-size:12px; color:var(--muted); letter-spacing:.3px; }
+
+    .msRow{
+      position:relative; z-index:1; margin-top:12px; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;
+      padding:12px; border:1px solid var(--border); border-radius:18px; background: rgba(0,0,0,.18);
+      align-items:center;
+    }
+    .msLeft{ display:flex; align-items:center; gap:10px; color: var(--muted); font-size: 12px; }
+    .pill{
+      font-variant-numeric: tabular-nums;
+      border:1px solid var(--border); background: rgba(255,255,255,.06);
+      padding:8px 12px; border-radius:999px; color: rgba(255,255,255,.9);
+      font-weight: 800; min-width: 96px; text-align:center;
+    }
+
+    .progressWrap{ width:100%; margin-top:10px; position:relative; z-index:1; }
+    .bar{ height:10px; width:100%; background: rgba(255,255,255,.08); border:1px solid var(--border); border-radius:999px; overflow:hidden; }
+    .fill{ height:100%; width:0%; background: linear-gradient(90deg, #60a5fa, #a78bfa, #34d399); border-radius:999px; transition: width .18s linear; }
+
+    .footer{ position:relative; z-index:1; margin-top:12px; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; color: var(--muted); font-size:12px; }
+
+    @media (max-width: 360px){
+      .grid{ grid-template-columns: repeat(2, 1fr); }
+      .tile{ min-height:78px; }
+      .pill{ min-width: 88px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="top">
+        <div>
+          <h1 class="title">⏳ Countdown to 9 Feb 2026</h1>
+          <p class="subtitle">Target: 09-02-2026 00:00:00</p>
+        </div>
+        <div class="badge" id="status">LIVE</div>
+      </div>
+
+      <div class="grid">
+        <div class="tile"><div><p class="num" id="d">--</p><div class="lbl">दिन</div></div></div>
+        <div class="tile"><div><p class="num" id="h">--</p><div class="lbl">घंटे</div></div></div>
+        <div class="tile"><div><p class="num" id="m">--</p><div class="lbl">मिनट</div></div></div>
+        <div class="tile"><div><p class="num" id="s">--</p><div class="lbl">सेकंड</div></div></div>
+      </div>
+
+      <div class="msRow">
+        <div class="msLeft">⚡ Milliseconds</div>
+        <div class="pill" id="ms">---</div>
+      </div>
+
+      <div class="progressWrap">
+        <div class="bar"><div class="fill" id="fill"></div></div>
+      </div>
+
+      <div class="footer">
+        <div id="nowTxt">Now: --</div>
+        <div id="leftTxt">Left: --</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Countdown
+    const target = new Date(2026, 1, 9, 0, 0, 0, 0);
+    const $ = (id) => document.getElementById(id);
+    const pad2 = (n) => String(n).padStart(2, "0");
+    const pad3 = (n) => String(n).padStart(3, "0");
+
+    function fmt(dt){
+      return `${pad2(dt.getDate())}-${pad2(dt.getMonth()+1)}-${dt.getFullYear()} ${pad2(dt.getHours())}:${pad2(dt.getMinutes())}:${pad2(dt.getSeconds())}`;
+    }
+
+    function update(){
+      const now = new Date();
+      const diff = target - now;
+      $("nowTxt").textContent = `Now: ${fmt(now)}`;
+
+      if (diff <= 0){
+        $("status").textContent = "DONE";
+        $("d").textContent = "0"; $("h").textContent = "0"; $("m").textContent = "0"; $("s").textContent = "0";
+        $("ms").textContent = "000";
+        $("leftTxt").textContent = "Left: 0d 00:00:00.000";
+        $("fill").style.width = "100%";
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+      const milliseconds = diff % 1000;
+
+      $("d").textContent = days;
+      $("h").textContent = hours;
+      $("m").textContent = minutes;
+      $("s").textContent = seconds;
+      $("ms").textContent = pad3(milliseconds);
+
+      $("leftTxt").textContent =
+        `Left: ${days}d ${pad2(hours)}:${pad2(minutes)}:${pad2(seconds)}.${pad3(milliseconds)}`;
+
+      // 1 hour progress
+      const hourStart = new Date(now);
+      hourStart.setMinutes(0, 0, 0);
+      const elapsedInHour = now - hourStart;
+      const hourProgress = (elapsedInHour / (60 * 60 * 1000)) * 100;
+      $("fill").style.width = `${Math.min(100, Math.max(0, hourProgress)).toFixed(2)}%`;
+
+      requestAnimationFrame(update);
+    }
+    update();
+
+    // ✅ Service Worker: MUST control /Waiting/ scope
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/Waiting/sw.js", { scope: "/Waiting/" });
+      });
+    }
+  </script>
+</body>
+</html>
