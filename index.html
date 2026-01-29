@@ -21,15 +21,19 @@
     }
     *{ box-sizing:border-box; }
     body{
-      margin:0; min-height:100svh; display:grid; place-items:center; padding:18px;
-      color:var(--text);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans";
-      background:
-        radial-gradient(1200px 700px at 15% 10%, #2b7bff33 0%, transparent 60%),
-        radial-gradient(1000px 600px at 85% 20%, #a855f733 0%, transparent 55%),
-        radial-gradient(900px 700px at 40% 95%, #22c55e26 0%, transparent 55%),
-        linear-gradient(160deg, var(--bg1), var(--bg2));
-    }
+  margin:0;
+  min-height:100svh;
+  display:grid;
+  place-items:center;
+  padding:18px;
+  color:#fff;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+
+  /* 🔥 Background Image */
+  background:
+    linear-gradient(rgba(11,18,32,.55), rgba(11,18,32,.75)),
+    url("bg.jpg") center / cover no-repeat fixed;
+}
     .wrap{ width:min(560px, 100%); }
     .card{
       background: linear-gradient(180deg, var(--card), var(--card2));
